@@ -78,7 +78,7 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof ClientException) {
-            $message = $exception->getResponse()->getBody();
+            $message = $exception->getResponse()->getBody()->getContents();
             $code = $exception->getCode();
             return $this->errorMessage($message, 200);
         }

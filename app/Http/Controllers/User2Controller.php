@@ -2,74 +2,52 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\User2Service;
-use App\Models\User;
-use App\Traits\ApiResponser;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Response;
-use Laravel\Lumen\Routing\Controller as BaseController;
+use Illuminate\Http\Response; // Response Components
+use App\Traits\ApiResponser; // Use to standardize API responses
+use Illuminate\Http\Request;  // Handling HTTP requests in Lumen
+use App\Services\User2Service; // User1 Service
+use DB;
 
-class UserController extends BaseController
+class User2Controller extends Controller
 {
     use ApiResponser;
 
-    /**
-     * The service to consume the User2 Microservice
-     * @var User2Service
-     */
     public $user2Service;
 
-    /**
-     * Create a new controller instance
-     * @return void
-     */
-    public function __construct(User2Service $user2Service){
+    public function __construct(User2Service $user2Service)
+    {
         $this->user2Service = $user2Service;
     }
 
     public function index()
     {
-        // Logic will be added to call Site2 microservice
-    }
-
-    public function getUsers()
-    {
-        // Logic will be added to call Site2 microservice
+        return $this->successResponse($this->user2Service->obtainUsers2());
     }
 
     public function add(Request $request)
     {
-        // Logic will be added to call Site2 microservice
+        return $this->successResponse(
+            $this->user2Service->createUser2($request->all()), 
+            Response::HTTP_CREATED);
     }
-
+    public function getUsers() {
+        try {
+            return response()->json(User::all(), 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
     public function show($id)
     {
-        // Logic will be added to call Site2 microservice
+        return $this->successResponse($this->user2Service->obtainUser2($id));
     }
-
     public function update(Request $request, $id)
     {
-        // Logic will be added to call Site2 microservice
+        return $this->successResponse($this->user2Service->editUser2($request->all(), $id));
     }
 
     public function delete($id)
     {
-        // Logic will be added to call Site2 microservice
-    }
-
-    public function getUser()
-    {
-        // Logic will be added to call Site2 microservice
-    }
-
-    public function getError()
-    {
-        // Logic will be added to call Site2 microservice
-    }
-
-    public function goToDashboard()
-    {
-        // Logic will be added to call Site2 microservice
+        return $this->successResponse($this->user2Service->deleteUser2($id));
     }
 }
